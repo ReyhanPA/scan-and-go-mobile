@@ -1,7 +1,17 @@
-import IconDashboard from "./dashboard.svg";
-import IconLibrary from "./library.svg";
+import IconPengguna from "./pengguna.svg";
+import IconRiwayat from "./riwayat.svg";
+import IconLogo from "./logo.svg";
+import IconDelete from "./delete.svg";
+import IconEdit from "./edit.svg";
+import IconDetail from "./detail.svg";
+import IconArrowDown from "./arrow-down.svg";
 
 export {
-  IconDashboard,
-  IconLibrary
+  IconPengguna,
+  IconRiwayat,
+  IconLogo,
+  IconDelete,
+  IconEdit,
+  IconDetail,
+  IconArrowDown
 };

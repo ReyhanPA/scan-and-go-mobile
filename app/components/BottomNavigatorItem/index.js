@@ -1,11 +1,12 @@
 import React from "react";
 import { TouchableOpacity, View, StyleSheet } from "react-native";
-import { IconDashboard, IconLibrary } from "../../../assets";
+import { IconPengguna, IconRiwayat } from "../../../assets";
 import { LinearGradient } from 'expo-linear-gradient';
 
 const BottomNavigatorItem = ({ label, isFocused, onPress, onLongPress }) => {
   return (
     <TouchableOpacity
+      activeOpacity={0.7}
       onPress={onPress}
       onLongPress={onLongPress}
       style={{ flex: 1 }}
@@ -13,31 +14,31 @@ const BottomNavigatorItem = ({ label, isFocused, onPress, onLongPress }) => {
     >
       {label === "Pengguna" && ( isFocused ? (
         <View className="flex h-full items-center justify-center relative">
-          <View className="before:w-full before:h-1 before:absolute before:-top-3 before:bg-[#1A8EFD]"></View>
+          <View className="before:w-full before:h-1 before:absolute before:-top-3 before:bg-[#7AB2B2]"></View>
           <LinearGradient
-            colors={['rgba(54, 120, 221, 0.18)', 'rgba(244, 244, 244, 0.30)']}
+            colors={['rgba(122, 178, 178, 0.3)', 'rgba(122, 178, 178, 0.2)', 'rgba(122, 178, 178, 0.1)']}
             style={styles.gradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
           />
-          <IconDashboard height={24} width={24} />
+          <IconPengguna height={32} width={32} />
         </View>
       ) : (       
-        <IconDashboard height={24} width={24} />
+        <IconPengguna height={32} width={32} />
       ))}
       {label === "Riwayat" && ( isFocused ? (
         <View className="flex h-full items-center justify-center relative">
-          <View className="before:w-full before:h-1 before:absolute before:-top-3 before:bg-[#1A8EFD]"></View>
+          <View className="before:w-full before:h-1 before:absolute before:-top-3 before:bg-[#7AB2B2]"></View>
           <LinearGradient
-            colors={['rgba(54, 120, 221, 0.18)', 'rgba(244, 244, 244, 0.30)']}
+            colors={['rgba(122, 178, 178, 0.3)', 'rgba(122, 178, 178, 0.2)', 'rgba(122, 178, 178, 0.1)']}
             style={styles.gradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
           />
-          <IconLibrary height={24} width={24} />
+          <IconRiwayat height={32} width={32} />
         </View>
       ) : (       
-        <IconLibrary height={24} width={24} />
+        <IconRiwayat height={32} width={32} />
       ))}
     </TouchableOpacity>
   );
