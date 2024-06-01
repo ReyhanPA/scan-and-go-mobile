@@ -1,23 +1,30 @@
 import React from "react";
 import { StyleSheet, StatusBar, SafeAreaView, ScrollView, View, Text, TouchableOpacity } from "react-native";
+import { router } from 'expo-router';
 import { TopBar } from "../../../components";
 import { IconDetail } from "../../../../assets";
 
 const dataPengguna = [
   {
-    id: 1,
+    id: "1",
+    nama: "Reyhan Putra Ananda",
     nim: "18221161",
-    plat: "D 6256 ZBQ"
+    plat: "D 6256 ZBQ",
+    saldo: 100000
   },
   {
-    id: 2,
+    id: "2",
+    nama: "Saiful Fikri",
     nim: "18221162",
-    plat: "B 1234 ABC"
+    plat: "B 1234 ABC",
+    saldo: 200000
   },
   {
-    id: 3,
+    id: "3",
+    nama: "Bambang Pratama",
     nim: "18221163",
-    plat: "C 1234 ABC"
+    plat: "C 1234 ABC",
+    saldo: 300000
   }
 ]
 
@@ -53,7 +60,10 @@ const PenggunaScreen = () => {
               <Text className="text-sm font-normal">{pengguna.plat}</Text>
             </View>
             <View className="flex w-1/6 justify-center items-end">
-              <TouchableOpacity activeOpacity={0.7}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => router.push({pathname: "./penggunaScreen/[detailScreen]", params: {penggunaID: pengguna.id, penggunaNama: pengguna.nama, penggunaNIM: pengguna.nim, penggunaPlat: pengguna.plat, penggunaSaldo: pengguna.saldo}})}
+              >
                 <IconDetail height={32} width={32} />
               </TouchableOpacity>
             </View>

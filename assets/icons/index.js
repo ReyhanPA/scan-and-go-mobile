@@ -5,6 +5,7 @@ import IconDelete from "./delete.svg";
 import IconEdit from "./edit.svg";
 import IconDetail from "./detail.svg";
 import IconArrowDown from "./arrow-down.svg";
+import IconBack from "./back.svg";
 
 export {
   IconPengguna,
@@ -13,5 +14,6 @@ export {
   IconDelete,
   IconEdit,
   IconDetail,
-  IconArrowDown
+  IconArrowDown,
+  IconBack
 };

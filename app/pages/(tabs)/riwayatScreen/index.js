@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import { StyleSheet, StatusBar, SafeAreaView, ScrollView, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, StatusBar, SafeAreaView, ScrollView, View, Text, TouchableOpacity, Button } from "react-native";
 import { TopBar } from "../../../components";
-import DatePicker from "react-native-date-picker";
+import DatePicker from 'react-native-date-picker'
+import { registerTranslation, en } from 'react-native-paper-dates';
+
+registerTranslation('en', en);
 
 const dataRiwayat = [
   {
@@ -25,22 +28,35 @@ const dataRiwayat = [
     keluar: "13:00",
     tanggal: "02/04/2024"
   }
-]
+];
 
 const RiwayatScreen = () => {
   const [date, setDate] = useState(new Date())
+  const [open, setOpen] = useState(false)
 
   return (
     <SafeAreaView style={styles.container}>
-      <TopBar/>
+      <TopBar />
       <ScrollView className="flex-1 h-full w-full bg-white px-4 py-4">
         <Text className="text-xl font-bold text-[#4D869C] mb-4">Daftar Riwayat</Text>
-        <TouchableOpacity activeOpacity={0.7}>
+        <TouchableOpacity activeOpacity={0.7} onPress={() => setOpen(true)} >
           <View className="flex flex-row justify-center items-center h-8 w-full bg-[#CDE8E5] mb-4 rounded-full shadow shadow-black">
-            <Text className="text-base font-medium text-[#4D869C]">02/04/2024</Text>
+            <Text className="text-base font-medium text-[#4D869C]">{date.toDateString()}</Text>
           </View>
         </TouchableOpacity>
-        <DatePicker date={date} onDateChange={setDate} />
+        <DatePicker
+          modal
+          mode="date"
+          open={open}
+          date={date}
+          onConfirm={(date) => {
+            setOpen(false)
+            setDate(date)
+          }}
+          onCancel={() => {
+            setOpen(false)
+          }}
+        />
         <View className="flex-row justify-between w-full px-4 py-4 bg-[#F5FFFF] border border-[#4D869C]">
           <View className="flex w-1/6 justify-center items-start">
             <Text className="text-sm font-medium text-[#4D869C]">No</Text>
