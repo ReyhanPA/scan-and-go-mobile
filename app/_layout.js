@@ -1,16 +1,19 @@
 import { Stack } from "expo-router";
+import AuthProvider from "../contexts/AuthProvider";
 
 const StackLayout = () => {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen
-        name="pages"
-        options={{
-          title: "Scan and Go",
-          headerShown: false,
-        }}
-      />
-    </Stack>
+    <AuthProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen
+          name="pages"
+          options={{
+            title: "Scan and Go",
+            headerShown: false,
+          }}
+        />
+      </Stack>
+    </AuthProvider>
   );
 };
 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "420574238536",
+    "project_id": "scan-and-go-b5156",
+    "storage_bucket": "scan-and-go-b5156.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:420574238536:android:0980851d02cbd37102457d",
+        "android_client_info": {
+          "package_name": "com.reyhanpa.scanandgomobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAv-oFEBJrRDgtEAXoz3tAtNjw_Ne7K57o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,25 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, ScrollView, StatusBar, SafeAreaView, Text, Modal, TouchableOpacity } from "react-native";
 import { Button, TextInput, HelperText } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
-import QRCode from "react-native-qrcode-svg";
 import { TopBarDetail } from "../../../../components";
 import { styled } from "nativewind";
 import { router } from "expo-router";
+import { useAuth } from "../../../../../contexts/AuthProvider";
+import firestore from "@react-native-firebase/firestore";
 import Spinner from "react-native-loading-spinner-overlay";
+import QRCode from "react-native-qrcode-svg";
 
 const StyledTextInput = styled(TextInput);
 const StyledHelperText = styled(HelperText);
 
 const DetailScreen = () => {
   const route = useRoute();
+  const penggunaID = route.params.penggunaID;
+  const [dataUser, setDataUser] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [modalHapusVisible, setModalHapusVisible] = useState(false);
-
-  const penggunaNama = route.params.penggunaNama;
-  const penggunaNIM = route.params.penggunaNIM;
-  const penggunaPlat = route.params.penggunaPlat;
-  const penggunaSaldo = route.params.penggunaSaldo;
+  const { isLogin, user } = useAuth();
 
   const handleYa = () => {
     setModalHapusVisible(false);
@@ -33,8 +34,6 @@ const DetailScreen = () => {
     email: "",
     password: "",
   });
-  const [loading, setLoading] = useState(false);
-  // const { signIn } = useAuth();
 
   const validate = () => {
     let newErrors = {
@@ -76,6 +75,29 @@ const DetailScreen = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        if (user && user.uid && isLogin) {
+          const userRef = firestore().collection("users").doc(penggunaID);
+          const docSnapshot = await userRef.get();
+          if (docSnapshot.exists) {
+            setDataUser({ id: docSnapshot.id, ...docSnapshot.data() });
+          } else {
+            console.error("No such document!");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [user]);
+
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
@@ -89,14 +111,14 @@ const DetailScreen = () => {
       <TopBarDetail />
       <ScrollView className="flex-1 h-full w-full bg-white px-4 py-4">
         <View className="flex justify-center items-center my-8">
-          <QRCode value="https://www.google.com/" logoSize={100} />
+          <QRCode value={dataUser.qrcode} logoSize={100} />
           <View className="flex justify-center items-start w-full my-12 px-4">
             <View className="flex flex-row h-10 w-full justify-start items-center bg-[#F5FFFF] px-4 border-b border-b-slate-300">
               <View className="w-2/6">
                 <Text className="text-base font-normal">Nama</Text>
               </View>
               <View className="w-4/6">
-                <Text className="text-base font-normal">: {penggunaNama}</Text>
+                <Text className="text-base font-normal">: {dataUser.nama}</Text>
               </View>
             </View>
             <View className="flex flex-row h-10 w-full justify-start items-center bg-[#F5FFFF] px-4 border-b border-b-slate-300">
@@ -104,7 +126,7 @@ const DetailScreen = () => {
                 <Text className="text-base font-normal">NIM</Text>
               </View>
               <View className="w-2/6">
-                <Text className="text-base font-normal">: {penggunaNIM}</Text>
+                <Text className="text-base font-normal">: {dataUser.nim}</Text>
               </View>
             </View>
             <View className="flex flex-row h-10 w-full justify-start items-center bg-[#F5FFFF] px-4 border-b border-b-slate-300">
@@ -112,7 +134,7 @@ const DetailScreen = () => {
                 <Text className="text-base font-normal">Plat Nomor</Text>
               </View>
               <View className="w-4/6">
-                <Text className="text-base font-normal">: {penggunaPlat}</Text>
+                <Text className="text-base font-normal">: {dataUser.plat}</Text>
               </View>
             </View>
             <View className="flex flex-row h-10 w-full justify-start items-center bg-[#F5FFFF] px-4 border-b border-b-slate-300">
@@ -120,7 +142,7 @@ const DetailScreen = () => {
                 <Text className="text-base font-normal">Saldo</Text>
               </View>
               <View className="w-2/6">
-                <Text className="text-base font-normal">: Rp{penggunaSaldo},-</Text>
+                <Text className="text-base font-normal">: Rp{dataUser.saldo},-</Text>
               </View>
             </View>
             <View className="flex flex-row justify-between items-center w-full mt-12">
@@ -142,6 +164,7 @@ const DetailScreen = () => {
                       activeOutlineColor="#4D869C"
                       mode="outlined"
                       label="Nama"
+                      value={dataUser.nama}
                       // value={email}
                       // onChangeText={(email) => {
                       //   setErrors(errors => ({ ...errors, email: "" })),
@@ -158,6 +181,7 @@ const DetailScreen = () => {
                       activeOutlineColor="#4D869C"
                       mode="outlined"
                       label="NIM"
+                      value={dataUser.nim}
                       // value={email}
                       // onChangeText={(email) => {
                       //   setErrors(errors => ({ ...errors, email: "" })),
@@ -174,6 +198,7 @@ const DetailScreen = () => {
                       activeOutlineColor="#4D869C"
                       mode="outlined"
                       label="Plat"
+                      value={dataUser.plat}
                       // value={email}
                       // onChangeText={(email) => {
                       //   setErrors(errors => ({ ...errors, email: "" })),
@@ -190,6 +215,7 @@ const DetailScreen = () => {
                       activeOutlineColor="#4D869C"
                       mode="outlined"
                       label="Saldo"
+                      value={dataUser.saldo}
                       // value={email}
                       // onChangeText={(email) => {
                       //   setErrors(errors => ({ ...errors, email: "" })),

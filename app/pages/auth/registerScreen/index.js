@@ -3,7 +3,8 @@ import { StyleSheet, ScrollView, View, Text, StatusBar, SafeAreaView } from "rea
 import { styled } from "nativewind";
 import { TextInput, HelperText, Button } from "react-native-paper";
 import { router } from "expo-router";
-// import { useAuth } from "../../../contexts/AuthProvider";
+import { useAuth } from "../../../../contexts/AuthProvider";
+import firestore from '@react-native-firebase/firestore';
 import Spinner from "react-native-loading-spinner-overlay";
 
 const StyledTextInput = styled(TextInput);
@@ -17,11 +18,15 @@ const RegisterScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({
+    nama: "",
+    nim: "",
+    plat: "",
+    saldo: "",
     email: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
-  // const { signIn } = useAuth();
+  const { signUp } = useAuth();
 
   const validate = () => {
     let newErrors = {
@@ -34,7 +39,7 @@ const RegisterScreen = () => {
     };
 
     if (!nama) {
-      newErrors.nama = "Name is required";
+      newErrors.nama = "Nama is required";
     }
 
     if (!nim) {
@@ -60,15 +65,29 @@ const RegisterScreen = () => {
     return newErrors;
   };
 
-  const handleSignIn = () => {
+  const handleSignUp = async () => {
     const findErrors = validate();
     if (Object.values(findErrors).some(value => value !== "")) {
       setErrors(findErrors);
     } else {
       setLoading(true);
-      signIn(email, password).then(res=>{
-        router.replace("../../(tabs)/dashboardScreen")
-      }).catch(error => {
+      try {
+        const res = await signUp(email, password);
+        const uid = res.user.uid;
+        await firestore().collection('users').doc(uid).set({
+          uid: uid,
+          nama: nama,
+          nim: nim,
+          plat: plat,
+          saldo: saldo,
+          email: email,
+          role: "pengguna",
+          qrcode: uid,
+          created_at: firestore.FieldValue.serverTimestamp(),
+          updated_at: null,
+        });
+        router.replace("../../(tabs)/penggunaScreen");
+      } catch (error) {
         let newErrors = {
           email: "",
           password: ""
@@ -79,9 +98,9 @@ const RegisterScreen = () => {
           newErrors.email = "Something went wrong.";
         }
         setErrors(newErrors);
-      }).finally(() => {
+      } finally {
         setLoading(false);
-      });
+      }
     }
   };
 
@@ -105,12 +124,12 @@ const RegisterScreen = () => {
               activeOutlineColor="#4D869C"
               mode="outlined"
               label="Nama"
-              // value={email}
-              // onChangeText={(email) => {
-              //   setErrors(errors => ({ ...errors, email: "" })),
-              //   setEmail(email)
-              // }}
-              // error={errors.email !== ""}
+              value={nama}
+              onChangeText={(nama) => {
+                setErrors(errors => ({ ...errors, nama: "" })),
+                setNama(nama)
+              }}
+              error={errors.nama !== ""}
             />
             <StyledHelperText type="error" visible={errors.nama !== ""}>{errors.nama}</StyledHelperText>
             <StyledTextInput
@@ -119,12 +138,12 @@ const RegisterScreen = () => {
               activeOutlineColor="#4D869C"
               mode="outlined"
               label="NIM"
-              // value={email}
-              // onChangeText={(email) => {
-              //   setErrors(errors => ({ ...errors, email: "" })),
-              //   setEmail(email)
-              // }}
-              // error={errors.email !== ""}
+              value={nim}
+              onChangeText={(nim) => {
+                setErrors(errors => ({ ...errors, nim: "" })),
+                setNim(nim)
+              }}
+              error={errors.nim !== ""}
             />
             <StyledHelperText type="error" visible={errors.nim !== ""}>{errors.nim}</StyledHelperText>
             <StyledTextInput
@@ -133,12 +152,12 @@ const RegisterScreen = () => {
               activeOutlineColor="#4D869C"
               mode="outlined"
               label="Plat"
-              // value={email}
-              // onChangeText={(email) => {
-              //   setErrors(errors => ({ ...errors, email: "" })),
-              //   setEmail(email)
-              // }}
-              // error={errors.email !== ""}
+              value={plat}
+              onChangeText={(plat) => {
+                setErrors(errors => ({ ...errors, plat: "" })),
+                setPlat(plat)
+              }}
+              error={errors.plat !== ""}
             />
             <StyledHelperText type="error" visible={errors.plat !== ""}>{errors.plat}</StyledHelperText>
             <StyledTextInput
@@ -147,12 +166,12 @@ const RegisterScreen = () => {
               activeOutlineColor="#4D869C"
               mode="outlined"
               label="Saldo"
-              // value={email}
-              // onChangeText={(email) => {
-              //   setErrors(errors => ({ ...errors, email: "" })),
-              //   setEmail(email)
-              // }}
-              // error={errors.email !== ""}
+              value={saldo}
+              onChangeText={(saldo) => {
+                setErrors(errors => ({ ...errors, saldo: "" })),
+                setSaldo(saldo)
+              }}
+              error={errors.saldo !== ""}
             />
             <StyledHelperText type="error" visible={errors.saldo !== ""}>{errors.saldo}</StyledHelperText>
             <StyledTextInput
@@ -161,12 +180,12 @@ const RegisterScreen = () => {
               activeOutlineColor="#4D869C"
               mode="outlined"
               label="Email"
-              // value={email}
-              // onChangeText={(email) => {
-              //   setErrors(errors => ({ ...errors, email: "" })),
-              //   setEmail(email)
-              // }}
-              // error={errors.email !== ""}
+              value={email}
+              onChangeText={(email) => {
+                setErrors(errors => ({ ...errors, email: "" })),
+                setEmail(email)
+              }}
+              error={errors.email !== ""}
             />
             <StyledHelperText type="error" visible={errors.email !== ""}>{errors.email}</StyledHelperText>
             <StyledTextInput
@@ -175,15 +194,16 @@ const RegisterScreen = () => {
               activeOutlineColor="#4D869C"
               mode="outlined"
               label="Password"
-              // value={email}
-              // onChangeText={(email) => {
-              //   setErrors(errors => ({ ...errors, email: "" })),
-              //   setEmail(email)
-              // }}
-              // error={errors.email !== ""}
+              value={password}
+              onChangeText={(password) => {
+                setErrors(errors => ({ ...errors, password: "" })),
+                setPassword(password)
+              }}
+              error={errors.password !== ""}
+              secureTextEntry={true}
             />
             <StyledHelperText type="error" visible={errors.password !== ""}>{errors.password}</StyledHelperText>
-            <Button className="mb-4 w-36" buttonColor="#4D869C" mode="contained" onPress={handleSignIn}>
+            <Button className="mb-4 w-36" buttonColor="#4D869C" mode="contained" onPress={handleSignUp}>
               <Text className="text-white text-base font-medium">
                 Register
               </Text>

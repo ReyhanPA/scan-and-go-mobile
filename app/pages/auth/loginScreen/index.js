@@ -3,7 +3,7 @@ import { StyleSheet, ScrollView, View, Text, StatusBar, SafeAreaView } from "rea
 import { styled } from "nativewind";
 import { TextInput, HelperText, Button } from "react-native-paper";
 import { router } from "expo-router";
-// import { useAuth } from "../../../contexts/AuthProvider";
+import { useAuth } from "../../../../contexts/AuthProvider";
 import Spinner from "react-native-loading-spinner-overlay";
 
 const StyledTextInput = styled(TextInput);
@@ -17,7 +17,7 @@ const LoginScreen = () => {
     password: "",
   });
   const [loading, setLoading] = useState(false);
-  // const { signIn } = useAuth();
+  const { signIn } = useAuth();
 
   const validate = () => {
     let newErrors = {
@@ -43,7 +43,7 @@ const LoginScreen = () => {
     } else {
       setLoading(true);
       signIn(email, password).then(res=>{
-        router.replace("../../(tabs)/dashboardScreen")
+        router.replace("../../(tabs)/penggunaScreen")
       }).catch(error => {
         let newErrors = {
           email: "",
@@ -81,12 +81,12 @@ const LoginScreen = () => {
               activeOutlineColor="#4D869C"
               mode="outlined"
               label="Email"
-              // value={email}
-              // onChangeText={(email) => {
-              //   setErrors(errors => ({ ...errors, email: "" })),
-              //   setEmail(email)
-              // }}
-              // error={errors.email !== ""}
+              value={email}
+              onChangeText={(email) => {
+                setErrors(errors => ({ ...errors, email: "" })),
+                setEmail(email)
+              }}
+              error={errors.email !== ""}
             />
             <StyledHelperText type="error" visible={errors.email !== ""}>{errors.email}</StyledHelperText>
             <StyledTextInput
@@ -95,12 +95,13 @@ const LoginScreen = () => {
               activeOutlineColor="#4D869C"
               mode="outlined"
               label="Password"
-              // value={email}
-              // onChangeText={(email) => {
-              //   setErrors(errors => ({ ...errors, email: "" })),
-              //   setEmail(email)
-              // }}
-              // error={errors.email !== ""}
+              value={password}
+              onChangeText={(password) => {
+                setErrors(errors => ({ ...errors, password: "" })),
+                setPassword(password)
+              }}
+              error={errors.password !== ""}
+              secureTextEntry={true}
             />
             <StyledHelperText type="error" visible={errors.password !== ""}>{errors.password}</StyledHelperText>
             <Button className="mb-4 w-36" buttonColor="#4D869C" mode="contained" onPress={handleSignIn}>
