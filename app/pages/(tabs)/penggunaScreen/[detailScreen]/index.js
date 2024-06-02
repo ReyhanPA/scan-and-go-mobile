@@ -4,9 +4,7 @@ import { Button, TextInput } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
 import { TopBarDetail } from "../../../../components";
 import { styled } from "nativewind";
-import { router } from "expo-router";
 import { useAuth } from "../../../../../contexts/AuthProvider";
-import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import Spinner from "react-native-loading-spinner-overlay";
 import QRCode from "react-native-qrcode-svg";
@@ -21,31 +19,9 @@ const DetailScreen = () => {
   const [newNama, setNewNama] = useState("");
   const [newNim, setNewNim] = useState("");
   const [newPlat, setNewPlat] = useState("");
-  const [newSaldo, setNewSaldo] = useState("");
+  const [newSaldo, setNewSaldo] = useState(0);
   const [modalEditVisible, setModalEditVisible] = useState(false);
-  const [modalHapusVisible, setModalHapusVisible] = useState(false);
   const { isLogin, user } = useAuth();
-
-  const handleYa = async () => {
-    setModalHapusVisible(false);
-    setLoading(true);
-    try {
-      await auth().deleteUser(penggunaID);
-
-      const userRef = firestore().collection("users").doc(penggunaID);
-      await userRef.delete();
-
-      router.back();
-    } catch (error) {
-      console.error("Error deleting document: ", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleTidak = () => {
-    setModalHapusVisible(false);
-  };
 
   const handleSaveEdit = async () => {
     setModalEditVisible(false);
@@ -54,7 +30,7 @@ const DetailScreen = () => {
       nama: newNama,
       nim: newNim,
       plat: newPlat,
-      saldo: newSaldo
+      saldo: parseInt(newSaldo)
     });
     const updatedSnapshot = await userRef.get();
     setDataUser({ id: updatedSnapshot.id, ...updatedSnapshot.data() });
@@ -135,12 +111,9 @@ const DetailScreen = () => {
                 <Text className="text-base font-normal">: Rp{dataUser.saldo},-</Text>
               </View>
             </View>
-            <View className="flex flex-row justify-between items-center w-full mt-12">
+            <View className="flex flex-row justify-center items-center w-full mt-12">
               <Button className="mb-4 w-36" buttonColor="#4D869C" mode="contained" onPress={() => setModalEditVisible(true)}>
                 <Text className="text-white text-base font-medium">Edit</Text>
-              </Button>
-              <Button className="mb-4 w-36" buttonColor="#4D869C" mode="contained" onPress={() => setModalHapusVisible(true)}>
-                <Text className="text-white text-base font-medium">Hapus</Text>
               </Button>
             </View>
             <Modal transparent={true} visible={modalEditVisible} animationType="slide" onRequestClose={() => setModalEditVisible(false)}>
@@ -181,28 +154,14 @@ const DetailScreen = () => {
                       activeOutlineColor="#4D869C"
                       mode="outlined"
                       label="Saldo"
-                      value={newSaldo}
+                      value={newSaldo.toString()}
+                      keyboardType="numeric"
                       onChangeText={(text) => setNewSaldo(text)}
                     />
                   </View>
                   <Button className="mb-4 w-36" buttonColor="#4D869C" mode="contained" onPress={() => handleSaveEdit()}>
                     <Text className="text-white text-base font-medium">Simpan</Text>
                   </Button>
-                </View>
-              </View>
-            </Modal>
-            <Modal transparent={true} visible={modalHapusVisible} animationType="slide" onRequestClose={() => setModalHapusVisible(false)}>
-              <View style={styles.modalBackground}>
-                <View style={styles.modalContainer}>
-                  <Text className="text-xl font-bold text-[#4D869C] mb-4">Apakah yakin hapus akun?</Text>
-                  <View className="flex flex-row w-full justify-center">
-                    <TouchableOpacity className="shadow-md shadow-black" onPress={() => handleYa()} style={styles.modalButton}>
-                      <Text style={styles.modalButtonText}>Ya</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity className="shadow-md shadow-black" onPress={() => handleTidak()} style={styles.modalButton}>
-                      <Text style={styles.modalButtonText}>Tidak</Text>
-                    </TouchableOpacity>
-                  </View>
                 </View>
               </View>
             </Modal>
