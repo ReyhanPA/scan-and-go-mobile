@@ -1,78 +1,63 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, ScrollView, StatusBar, SafeAreaView, Text, Modal, TouchableOpacity } from "react-native";
-import { Button, TextInput, HelperText } from "react-native-paper";
+import { Button, TextInput } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
 import { TopBarDetail } from "../../../../components";
 import { styled } from "nativewind";
 import { router } from "expo-router";
 import { useAuth } from "../../../../../contexts/AuthProvider";
+import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import Spinner from "react-native-loading-spinner-overlay";
 import QRCode from "react-native-qrcode-svg";
 
 const StyledTextInput = styled(TextInput);
-const StyledHelperText = styled(HelperText);
 
 const DetailScreen = () => {
   const route = useRoute();
   const penggunaID = route.params.penggunaID;
-  const [dataUser, setDataUser] = useState([]);
+  const [dataUser, setDataUser] = useState({});
   const [loading, setLoading] = useState(true);
+  const [newNama, setNewNama] = useState("");
+  const [newNim, setNewNim] = useState("");
+  const [newPlat, setNewPlat] = useState("");
+  const [newSaldo, setNewSaldo] = useState("");
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [modalHapusVisible, setModalHapusVisible] = useState(false);
   const { isLogin, user } = useAuth();
 
-  const handleYa = () => {
+  const handleYa = async () => {
     setModalHapusVisible(false);
+    setLoading(true);
+    try {
+      await auth().deleteUser(penggunaID);
+
+      const userRef = firestore().collection("users").doc(penggunaID);
+      await userRef.delete();
+
+      router.back();
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleTidak = () => {
     setModalHapusVisible(false);
   };
 
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-  });
-
-  const validate = () => {
-    let newErrors = {
-      nama: "",
-      nim: "",
-      plat: "",
-      email: "",
-      password: "",
-    };
-
-    return newErrors;
-  };
-
-  const handleSaveEdit = () => {
-    const findErrors = validate();
-    if (Object.values(findErrors).some((value) => value !== "")) {
-      setErrors(findErrors);
-    } else {
-      setLoading(true);
-      signIn(email, password)
-        .then((res) => {
-          router.replace("../../(tabs)/dashboardScreen");
-        })
-        .catch((error) => {
-          let newErrors = {
-            email: "",
-            password: "",
-          };
-          if (error.code === "auth/invalid-email") {
-            newErrors.email = "Email or password invalid.";
-          } else {
-            newErrors.email = "Something went wrong.";
-          }
-          setErrors(newErrors);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
+  const handleSaveEdit = async () => {
+    setModalEditVisible(false);
+    const userRef = firestore().collection("users").doc(penggunaID);
+    await userRef.update({
+      nama: newNama,
+      nim: newNim,
+      plat: newPlat,
+      saldo: newSaldo
+    });
+    const updatedSnapshot = await userRef.get();
+    setDataUser({ id: updatedSnapshot.id, ...updatedSnapshot.data() });
   };
 
   useEffect(() => {
@@ -83,7 +68,12 @@ const DetailScreen = () => {
           const userRef = firestore().collection("users").doc(penggunaID);
           const docSnapshot = await userRef.get();
           if (docSnapshot.exists) {
-            setDataUser({ id: docSnapshot.id, ...docSnapshot.data() });
+            const userData = { id: docSnapshot.id, ...docSnapshot.data() };
+            setDataUser(userData);
+            setNewNama(userData.nama);
+            setNewNim(userData.nim);
+            setNewPlat(userData.plat);
+            setNewSaldo(userData.saldo);
           } else {
             console.error("No such document!");
           }
@@ -159,75 +149,43 @@ const DetailScreen = () => {
                   <Text className="text-xl font-bold text-[#4D869C] mb-4">Edit Akun</Text>
                   <View className="flex w-full justify-center">
                     <StyledTextInput
-                      className="w-10/12 h-12 mx-4 bg-white"
+                      className="w-10/12 h-12 mx-4 bg-white mb-4"
                       outlineColor="#4D869C"
                       activeOutlineColor="#4D869C"
                       mode="outlined"
                       label="Nama"
-                      value={dataUser.nama}
-                      // value={email}
-                      // onChangeText={(email) => {
-                      //   setErrors(errors => ({ ...errors, email: "" })),
-                      //   setEmail(email)
-                      // }}
-                      // error={errors.email !== ""}
+                      value={newNama}
+                      onChangeText={(text) => setNewNama(text)}
                     />
-                    <StyledHelperText type="error" visible={errors.nama !== ""}>
-                      {errors.nama}
-                    </StyledHelperText>
                     <StyledTextInput
-                      className="w-10/12 h-12 mx-4 bg-white"
+                      className="w-10/12 h-12 mx-4 bg-white mb-4"
                       outlineColor="#4D869C"
                       activeOutlineColor="#4D869C"
                       mode="outlined"
                       label="NIM"
-                      value={dataUser.nim}
-                      // value={email}
-                      // onChangeText={(email) => {
-                      //   setErrors(errors => ({ ...errors, email: "" })),
-                      //   setEmail(email)
-                      // }}
-                      // error={errors.email !== ""}
+                      value={newNim}
+                      onChangeText={(text) => setNewNim(text)}
                     />
-                    <StyledHelperText type="error" visible={errors.nim !== ""}>
-                      {errors.nim}
-                    </StyledHelperText>
                     <StyledTextInput
-                      className="w-10/12 h-12 mx-4 bg-white"
+                      className="w-10/12 h-12 mx-4 bg-white mb-4"
                       outlineColor="#4D869C"
                       activeOutlineColor="#4D869C"
                       mode="outlined"
                       label="Plat"
-                      value={dataUser.plat}
-                      // value={email}
-                      // onChangeText={(email) => {
-                      //   setErrors(errors => ({ ...errors, email: "" })),
-                      //   setEmail(email)
-                      // }}
-                      // error={errors.email !== ""}
+                      value={newPlat}
+                      onChangeText={(text) => setNewPlat(text)}
                     />
-                    <StyledHelperText type="error" visible={errors.plat !== ""}>
-                      {errors.plat}
-                    </StyledHelperText>
                     <StyledTextInput
-                      className="w-10/12 h-12 mx-4 bg-white"
+                      className="w-10/12 h-12 mx-4 bg-white mb-4"
                       outlineColor="#4D869C"
                       activeOutlineColor="#4D869C"
                       mode="outlined"
                       label="Saldo"
-                      value={dataUser.saldo}
-                      // value={email}
-                      // onChangeText={(email) => {
-                      //   setErrors(errors => ({ ...errors, email: "" })),
-                      //   setEmail(email)
-                      // }}
-                      // error={errors.email !== ""}
+                      value={newSaldo}
+                      onChangeText={(text) => setNewSaldo(text)}
                     />
-                    <StyledHelperText type="error" visible={errors.saldo !== ""}>
-                      {errors.saldo}
-                    </StyledHelperText>
                   </View>
-                  <Button className="mb-4 w-36" buttonColor="#4D869C" mode="contained" onPress={() => setModalEditVisible(false)}>
+                  <Button className="mb-4 w-36" buttonColor="#4D869C" mode="contained" onPress={() => handleSaveEdit()}>
                     <Text className="text-white text-base font-medium">Simpan</Text>
                   </Button>
                 </View>

@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { IconLogo } from "../../../assets";
-import { router } from "expo-router";
 import { useAuth } from "../../../contexts/AuthProvider";
 
 const TopBar = () => {

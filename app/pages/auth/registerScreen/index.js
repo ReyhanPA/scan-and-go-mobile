@@ -14,7 +14,7 @@ const RegisterScreen = () => {
   const [nama, setNama] = useState("");
   const [nim, setNim] = useState("");
   const [plat, setPlat] = useState("");
-  const [saldo, setSaldo] = useState("");
+  const [saldo, setSaldo] = useState(0);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({
@@ -79,7 +79,7 @@ const RegisterScreen = () => {
           nama: nama,
           nim: nim,
           plat: plat,
-          saldo: saldo,
+          saldo: parseInt(saldo),
           email: email,
           role: "pengguna",
           qrcode: uid,
