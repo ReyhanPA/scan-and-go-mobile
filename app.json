@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "scan-and-go-mobile",
+    "name": "Scan and Go",
     "slug": "scan-and-go-mobile",
     "version": "1.0.0",
     "scheme": "scan-and-go-mobile",
@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.reyhanpa.scanandgomobile",

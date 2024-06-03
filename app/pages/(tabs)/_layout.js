@@ -7,7 +7,7 @@ const TabsLayout = () => {
   
   if (!isLogin) {
     return (
-      <Redirect href="../auth/loginScreen" />
+      <Redirect href="/pages/auth/loginScreen" />
     )
   }
 

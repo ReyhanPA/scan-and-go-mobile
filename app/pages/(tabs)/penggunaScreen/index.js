@@ -88,7 +88,7 @@ const PenggunaScreen = () => {
               <View className="flex w-1/6 justify-center items-end">
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  onPress={() => router.push({pathname: "./penggunaScreen/[detailScreen]", params: {penggunaID: pengguna.uid, penggunaNama: pengguna.nama, penggunaNIM: pengguna.nim, penggunaPlat: pengguna.plat, penggunaSaldo: pengguna.saldo, penggunaQRCode: pengguna.qrcode}})}
+                  onPress={() => router.navigate({pathname: "/pages/(tabs)/penggunaScreen/[detailScreen]", params: {penggunaID: pengguna.uid, penggunaNama: pengguna.nama, penggunaNIM: pengguna.nim, penggunaPlat: pengguna.plat, penggunaSaldo: pengguna.saldo, penggunaQRCode: pengguna.qrcode}})}
                 >
                   <IconDetail height={32} width={32} />
                 </TouchableOpacity>
