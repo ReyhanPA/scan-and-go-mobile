@@ -77,7 +77,7 @@ const PenggunaScreen = () => {
           {data.map((pengguna, index) => (pengguna.role === "pengguna" &&
             <View key={pengguna.uid} className="flex-row justify-between w-full px-4 py-4 border-b border-b-slate-300">
               <View className="flex w-1/6 justify-center items-start">
-                <Text className="text-sm font-normal">{index + 1}</Text>
+                <Text className="text-sm font-normal">{index}</Text>
               </View>
               <View className="flex-1 justify-center items-start">
                 <Text className="text-sm font-normal">{pengguna.nim}</Text>
