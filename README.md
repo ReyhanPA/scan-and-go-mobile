@@ -57,7 +57,7 @@ Ada beberapa prerequisites yang harus di-setup sebelum menjalankan program di lo
   ```
 - Install android studio atau emulator lainnya
 
-Jika tidak hanya ingin mencoba aplikasinya, cukup download apk nya pada link yang tertera pada poin 1C
+Jika hanya ingin mencoba aplikasinya, cukup download apk nya pada link yang tertera pada poin 1C
 
 ## **D. Desain API**
 #### **1. GET /users**
